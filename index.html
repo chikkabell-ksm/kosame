@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOSAME OS - Central Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { 'kosame-blue': { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a', 950: '#0f172a' } } } }
+    }
+  </script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <style>
+    :root { --primary: #3b82f6; --bg-dark: #020617; }
+    body { background-color: var(--bg-dark); font-family: 'Rajdhani', sans-serif; color: #bfdbfe; overflow-x: hidden; }
+    .font-tech { font-family: 'Share Tech Mono', monospace; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
+    .animate-in { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); filter: blur(10px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    .bg-grid { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(59, 130, 246, 0.1) 1px, transparent 1px); mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%); }
+    .cyber-shape { clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
+    .cyber-shape-sm { clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); }
+    .glitch-text { position: relative; }
+    .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .glitch-text::before { left: 2px; text-shadow: -1px 0 #2563eb; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+    .glitch-text::after { left: -2px; text-shadow: -1px 0 #93c5fd; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+    @keyframes glitch-anim { 0% { clip: rect(38px, 9999px, 81px, 0); } 20% { clip: rect(6px, 9999px, 2px, 0); } 40% { clip: rect(74px, 9999px, 83px, 0); } 60% { clip: rect(18px, 9999px, 53px, 0); } 80% { clip: rect(46px, 9999px, 14px, 0); } 100% { clip: rect(64px, 9999px, 5px, 0); } }
+    @keyframes glitch-anim2 { 0% { clip: rect(2px, 9999px, 78px, 0); } 20% { clip: rect(56px, 9999px, 19px, 0); } 40% { clip: rect(32px, 9999px, 6px, 0); } 60% { clip: rect(82px, 9999px, 34px, 0); } 80% { clip: rect(21px, 9999px, 67px, 0); } 100% { clip: rect(54px, 9999px, 11px, 0); } }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-center relative selection:bg-kosame-blue-500/30 selection:text-kosame-blue-200">
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute inset-0 bg-grid"></div>
+    <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-kosame-blue-900/20 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-kosame-blue-950/40 to-transparent"></div>
+  </div>
+
+  <div id="root" class="relative z-10 w-full max-w-md"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const Icon = ({ name, size = 18, className = "" }) => {
+      const iconRef = useRef(null);
+      useEffect(() => {
+        if (iconRef.current && window.lucide) {
+          window.lucide.createIcons({
+            attrs: { class: className, width: size, height: size },
+            nameAttr: 'data-lucide',
+            icons: { [name]: window.lucide.icons[name] },
+            root: iconRef.current.parentElement
+          });
+        }
+      }, [name, size, className]);
+      return <i data-lucide={name} ref={iconRef} className={className}></i>;
+    };
+
+    const CyberBorder = ({ children, className = "", active = false }) => (
+      <div className={`relative p-[1px] cyber-shape transition-all duration-300 group ${className}`}>
+        <div className={`absolute inset-0 bg-gradient-to-br from-kosame-blue-500/50 via-transparent to-kosame-blue-600/50 opacity-50 cyber-shape transition-opacity duration-300 ${active ? 'opacity-100' : 'group-hover:opacity-100'}`}></div>
+        <div className="absolute inset-[1px] bg-[#020617] cyber-shape"></div>
+        <div className="relative z-10">{children}</div>
+      </div>
+    );
+
+    const ReturnButton = ({ setView }) => (
+      <div className="flex justify-center mt-8">
+        <button onClick={() => setView('home')} className="group relative px-8 py-2 overflow-hidden">
+          <div className="absolute inset-0 border-x border-kosame-blue-500/30 skew-x-[-20deg] bg-kosame-blue-900/10 group-hover:bg-kosame-blue-500/20 transition-all"></div>
+          <div className="relative flex items-center gap-3">
+             <span className="text-kosame-blue-500 font-tech text-xl">&lt;</span>
+             <span className="text-kosame-blue-400 text-[10px] font-bold tracking-[0.3em] uppercase group-hover:tracking-[0.5em] transition-all">System Return</span>
+             <span className="text-kosame-blue-500 font-tech text-xl">/&gt;</span>
+          </div>
+        </button>
+      </div>
+    );
+
+    const HomeView = ({ setView }) => (
+      <div className="flex flex-col gap-6 animate-in p-2 pt-8">
+         <header className="relative p-6 cyber-shape border-b border-kosame-blue-500/20 bg-gradient-to-r from-kosame-blue-950/30 to-transparent">
+            <div className="absolute top-0 left-0 w-2 h-2 bg-kosame-blue-500"></div>
+            <div className="absolute top-0 right-0 w-20 h-[1px] bg-kosame-blue-500"></div>
+            
+            <div className="flex justify-between items-start relative z-10">
+                <div>
+                    <h1 className="text-5xl font-bold italic tracking-tighter text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.8)] leading-none glitch-text" data-text="KOSAME">KOSAME</h1>
+                    <div className="flex items-center gap-3 mt-2">
+                        <div className="h-[2px] w-8 bg-kosame-blue-600"></div>
+                        <p className="text-sm font-tech text-kosame-blue-400">SYS.VER.1.2.5 <span className="text-kosame-blue-700 mx-1">|</span> @bbelle</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav className="flex flex-col gap-4 mt-2">
+          {[
+            { 
+              id: 'queue', 
+              label: 'CHECK QUEUE', 
+              desc: 'ตรวจสอบคิวงานได้ที่นี่',
+              icon: 'clipboard-list', 
+              url: 'https://script.google.com/macros/s/AKfycbwxNQzuYzxsrnitHLTuZla-rS40vKibeDLo7_LYr40dV2sOi5uFsWN5gLaUYrF_SIZl/exec',
+              newTab: true
+            },
+            { 
+              id: 'tos', 
+              label: 'TOS', 
+              desc: 'ข้อตกลงและเงื่อนไขในการสั่งงาน',
+              icon: 'file-text', 
+              action: () => setView('tos') // คงไว้เป็นการเปิดหน้า TOS ภายในระบบ
+            },
+            { 
+              id: 'price', 
+              label: 'PRICE LIST', 
+              desc: 'เช็คราคางานวาดที่นี่',
+              icon: 'tag', 
+              // ⚠️ นำลิงก์หน้าเว็บ GAS ของระบบ PRICE LIST มาใส่ตรงนี้ ⚠️
+              url: 'https://script.google.com/macros/s/ใส่รหัสโปรเจกต์ของหน้าราคา/exec', 
+              newTab: false
+            },
+            { 
+              id: 'example', 
+              label: 'EXAMPLE WORK', 
+              desc: 'ตัวอย่างผลงาน',
+              icon: 'image', 
+              url: 'https://script.google.com/macros/s/AKfycbzMJFFwDNoJNBJgvrnT6S5FHQ1HgpjguGwkwrRqgOrs07CxFMIq60TP0iPsR9Ss2V4J/exec',
+              newTab: true
+            },
+            { 
+              id: 'ych', 
+              label: 'YCH BASE', 
+              desc: 'เลือกท่าทางที่เรารับวาด',
+              icon: 'layers', 
+              // ⚠️ นำลิงก์หน้าเว็บ GAS ของระบบ YCH BASE มาใส่ตรงนี้ ⚠️
+              url: 'https://script.google.com/macros/s/ใส่รหัสโปรเจกต์ของหน้าYCH/exec',
+              newTab: false
+            },
+          ].map((item, idx) => (
+            <CyberBorder key={item.id} className="group cursor-pointer">
+                <button 
+                    onClick={() => {
+                        if (item.action) {
+                            item.action();
+                        } else {
+                            window.open(item.url, item.newTab ? '_blank' : '_self');
+                        }
+                    }} 
+                    className="w-full p-4 flex items-center gap-5 bg-black/40 backdrop-blur-sm group-hover:bg-kosame-blue-900/20 transition-all"
+                >
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-kosame-blue-500 blur-lg opacity-0 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="relative p-3 bg-kosame-blue-950/50 border border-kosame-blue-500/30 text-kosame-blue-400 group-hover:text-white group-hover:border-kosame-blue-400 transition-colors cyber-shape-sm">
+                            <Icon name={item.icon} size={20} />
+                        </div>
+                    </div>
+                    
+                    <div className="flex-grow text-left">
+                        <div className="flex items-center gap-2 mb-1">
+                             <span className="text-[10px] font-tech text-kosame-blue-700 group-hover:text-kosame-blue-500">0{idx + 1}</span>
+                             <h3 className="text-base font-bold text-white italic tracking-widest group-hover:tracking-[0.15em] transition-all">{item.label}</h3>
+                        </div>
+                        <p className="text-[11px] text-kosame-blue-400/60 font-mono group-hover:text-kosame-blue-300 transition-colors">{item.desc}</p>
+                    </div>
+
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                         <Icon name={item.newTab ? "external-link" : "chevron-right"} size={16} className="text-kosame-blue-500" />
+                    </div>
+                </button>
+            </CyberBorder>
+          ))}
+        </nav>
+      </div>
+    );
+
+    const TOSView = ({ setView }) => {
+        const tosData = [
+            {
+                id: "01", icon: "clock", title: "TIMELINE WORKING",
+                desc: "ระยะการทำงานสามารถดูได้ที่หน้า check queue เวลาที่กำหนดเป็นเวลาโดยประมาณบางงานอาจได้รับเร็วกว่ากำหนด",
+                box: "*หากมีเหตุจำเป็นที่ทำให้งานล่าช้าจะแจ้งให้ทราบก่อนทุกครั้ง"
+            },
+            {
+                id: "02", icon: "activity", title: "PROGRESS POLICY",
+                desc: "งดเร่งงานก่อนถึงระยะเวลาที่กำหนด แต่สามารถสอบถามอัพเดทงานได้ โดยปกติหากเป็นงานที่ใช้ระยะเวลานาน ทางเราจะส่งอัพเดททุก ๆ 3 วัน"
+            },
+            {
+                id: "03", icon: "monitor", title: "OPERATION HOURS",
+                desc: "เวลาทำงาน ของทางเราคือ 19.00 น.-23.00 น. นอกเหนือจากเวลานี้จะสามารถตอบแชท หรืออัพเดทตามปกติ",
+                note: "(แต่ยังไม่สามารถวาดงาน หรือแก้งานได้)"
+            },
+            {
+                id: "04", icon: "shield-check", title: "MODIFICATION RULES",
+                desc: "ก่อนถึงคิว สามารถแจ้งขอเปลี่ยนบรีฟตัวละครได้ แต่ไม่อนุญาตให้เพิ่มจำนวน หรือเพิ่มสเกล",
+                box: "*เนื่องจากทางเรากำหนดขอบเขตเวลาไว้ตั้งแต่ลงคิว หากเปลี่ยนแปลงตรงนี้อาจจะกระทบกับคิวอื่น"
+            },
+            {
+                id: "05", icon: "file-json", title: "FILE SPECIFICATIONS",
+                isSpec: true,
+                box: "*หากต้องการขนาดอื่น แจ้งก่อนเริ่มงานทุกครั้ง"
+            },
+            {
+                id: "06", icon: "share-2", title: "PORTFOLIOS",
+                desc: "ทางร้านจะนำผลงานของท่านไปเป็นตัวอย่างคอมมิชชั่น",
+                note: "(หากไม่สะดวก หรือไม่ต้องการให้เผยแพร่ รบกวนแจ้งก่อนเริ่มงานทุกครั้ง)"
+            }
+        ];
+
+        return (
+          <div className="flex flex-col gap-6 animate-in pb-12 p-4 pt-8">
+             <div className="flex items-center justify-between border-b border-kosame-blue-500/30 pb-4">
+              <div className="flex items-center gap-4">
+                  <button onClick={() => setView('home')} className="p-2 bg-kosame-blue-900/20 border border-kosame-blue-500/30 text-kosame-blue-400 hover:bg-kosame-blue-500 hover:text-white transition-all cyber-shape-sm"><Icon name="chevron-left" size={20} /></button>
+                  <h2 className="text-3xl font-bold italic text-white uppercase flex items-center gap-2 tracking-wider glitch-text" data-text="TOS">TOS</h2>
+              </div>
+            </div>
+
+            <div className="relative max-h-[65vh] overflow-y-auto custom-scrollbar pr-2">
+                <div className="absolute left-3 top-0 bottom-0 w-[1px] bg-gradient-to-b from-kosame-blue-500/0 via-kosame-blue-500/30 to-kosame-blue-500/0"></div>
+                {tosData.map((item, idx) => (
+                    <div key={idx} className="relative pl-8 mb-8 group">
+                        <div className="absolute left-[9px] top-6 -translate-y-1/2 w-1.5 h-1.5 bg-kosame-blue-950 border border-kosame-blue-500 rotate-45 group-hover:bg-kosame-blue-400 transition-colors"></div>
+                        <div className="bg-black/40 border-l border-kosame-blue-500/20 p-5 cyber-shape-sm hover:bg-kosame-blue-900/10 hover:border-kosame-blue-500/50 transition-all">
+                            <div className="flex items-center gap-2 mb-3 border-b border-kosame-blue-500/10 pb-2">
+                                <span className="text-[10px] font-tech text-kosame-blue-600">ID:{item.id}</span>
+                                <Icon name={item.icon} size={14} className="text-kosame-blue-400" />
+                                <h3 className="text-sm font-bold text-white uppercase italic tracking-widest">{item.title}</h3>
+                            </div>
+                            {item.isSpec ? (
+                                <div className="text-[13px] text-kosame-blue-100/80 leading-relaxed font-tech flex flex-col gap-1 mb-2 pl-2 border-l-2 border-kosame-blue-500/30">
+                                    <div><span className="text-kosame-blue-400 font-bold">EMOTE:</span> 1000x1000 px</div>
+                                    <div><span className="text-kosame-blue-400 font-bold">OTHERS:</span> 2048x2048 px</div>
+                                </div>
+                            ) : (
+                                <p className="text-[13px] text-kosame-blue-100/80 leading-relaxed mb-2 font-sans">{item.desc}</p>
+                            )}
+                            {item.note && <p className="text-xs text-kosame-blue-500/60 italic font-mono">{item.note}</p>}
+                            {item.box && (
+                                <div className="mt-3 p-3 bg-kosame-blue-500/5 border border-kosame-blue-500/20 text-[11px] text-kosame-blue-200 flex gap-2 items-start cyber-shape-sm">
+                                    <Icon name="info" size={14} className="mt-0.5 shrink-0 text-kosame-blue-400" />
+                                    <span>{item.box.replace('*', '')}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <ReturnButton setView={setView} />
+          </div>
+        );
+    };
+
+    const App = () => {
+      const [view, setView] = useState('home');
+
+      return (
+        <div className="min-h-screen flex justify-center items-center relative overflow-hidden bg-[#020617]">
+          <div id="root-inner" className="relative z-10 w-full max-w-md h-full min-h-screen md:min-h-0 md:h-auto">
+            {view === 'home' && <HomeView setView={setView} />}
+            {view === 'tos' && <TOSView setView={setView} />}
+            
+            <footer className="mt-8 px-6 pb-6 flex justify-between items-center text-kosame-blue-900 font-tech text-[9px] tracking-widest uppercase border-t border-kosame-blue-900/30 pt-4">
+                <div className="flex items-center gap-2"><Icon name="activity" size={10} className="animate-pulse text-kosame-blue-500" />KOSAME_OS v1.2.5</div>
+                <div className="flex items-center gap-1.5 bg-kosame-blue-950/40 px-3 py-1 border border-kosame-blue-900/50 rounded cyber-shape-sm">
+                    <div className="h-1.5 w-1.5 bg-kosame-blue-500 shadow-[0_0_5px_rgba(59,130,246,1)] animate-pulse rounded-full"></div>
+                    {view.toUpperCase()}_PROTOCOL
+                </div>
+            </footer>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
