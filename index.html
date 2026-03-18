@@ -2,9 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kosame - Central Hub</title>
-  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -29,12 +28,12 @@
       }
     }
   </script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  
   <style>
     body { 
       background-color: #fffcf5; 
@@ -43,31 +42,26 @@
       overflow-x: hidden; 
     }
     
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    
-    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .animate-in { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    
-    @keyframes popIn { 
-      0% { transform: scale(0.9); opacity: 0; } 
-      70% { transform: scale(1.05); opacity: 1; } 
-      100% { transform: scale(1); opacity: 1; } 
-    }
-    .animate-pop { animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-
-    /* Stripe Pattern Header & Footer */
+    /* แถบลายทางสีฟ้า - ปรับให้เลื่อนได้ */
     .striped-header-footer {
-      background-image: linear-gradient(-45deg, #cceaff 25%, #e5f4ff 25%, #e5f4ff 50%, #cceaff 50%, #cceaff 75%, #e5f4ff 75%, #e5f4ff 100%);
+      background-image: linear-gradient(
+        -45deg,
+        #cceaff 25%,
+        #e5f4ff 25%,
+        #e5f4ff 50%,
+        #cceaff 50%,
+        #cceaff 75%,
+        #e5f4ff 75%,
+        #e5f4ff 100%
+      );
       background-size: 40px 40px;
       animation: moveStripes 2s linear infinite;
       border-bottom: 4px solid #fdf4e1;
-      position: fixed;
-      width: 100%;
-      height: 24px;
-      z-index: 50;
     }
-    .stripe-top { top: 0; left: 0; }
-    .stripe-bottom { bottom: 0; left: 0; border-top: 4px solid #fdf4e1; border-bottom: none; }
+    .striped-footer {
+      border-top: 4px solid #fdf4e1;
+      border-bottom: none;
+    }
 
     @keyframes moveStripes {
       0% { background-position: 0 0; }
@@ -79,196 +73,294 @@
       0%, 100% { opacity: 0.2; transform: scale(0.6); }
       50% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 4px rgba(255, 223, 115, 0.8)); }
     }
-    .star { position: absolute; pointer-events: none; animation: twinkleStar linear infinite; z-index: 0; }
+    
+    .star {
+      position: absolute;
+      pointer-events: none;
+      animation: twinkleStar linear infinite;
+      z-index: 0;
+    }
 
-    /* Kosame Menu Button Style */
-    .menu-btn {
-      background-color: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(4px);
-      border: 2px solid #cceaff;
-      border-radius: 1.5rem;
-      box-shadow: 0 4px 0 0 #cceaff;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .menu-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 0 #cceaff;
-      border-color: #8cc6ff;
-    }
-    .menu-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 0 0 0 #cceaff;
+    .cute-scrollbar::-webkit-scrollbar { width: 8px; }
+    .cute-scrollbar::-webkit-scrollbar-track { background: #fffcf5; border-radius: 4px; }
+    .cute-scrollbar::-webkit-scrollbar-thumb { background: #ffdf73; border-radius: 4px; border: 2px solid #fffcf5; }
+    
+    .animate-pop { animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    @keyframes popIn { 
+      from { opacity: 0; transform: translateY(20px) scale(0.95); } 
+      to { opacity: 1; transform: translateY(0) scale(1); } 
     }
   </style>
 </head>
-<body class="selection:bg-kosame-yellow/50 selection:text-kosame-browndark">
+<body class="min-h-screen flex flex-col relative selection:bg-kosame-yellow/50 selection:text-kosame-browndark">
   
-  <div class="striped-header-footer stripe-top shadow-sm"></div>
-  <div class="striped-header-footer stripe-bottom shadow-[0_-2px_4px_rgba(0,0,0,0.02)]"></div>
+  <div class="h-6 w-full striped-header-footer fixed top-0 left-0 z-20 shadow-sm"></div>
 
-  <div id="root" class="relative z-10 w-full flex justify-center min-h-screen items-center py-10"></div>
+  <div id="root" class="relative z-10 w-full flex-grow flex justify-center mt-6 mb-12"></div>
+
+  <div class="h-6 w-full striped-header-footer striped-footer fixed bottom-0 left-0 z-20 shadow-[0_-2px_4px_rgba(0,0,0,0.02)]"></div>
 
   <script type="text/babel">
-    const { useEffect, useRef } = React;
+    const { useState, useEffect, useRef } = React;
 
-    const Icon = ({ name, size = 24, className = "" }) => {
-      const spanRef = useRef(null);
+    const Icon = ({ name, size = 18, className = "" }) => {
+      const iconRef = useRef(null);
       useEffect(() => {
-        if (spanRef.current && window.lucide) {
-          spanRef.current.innerHTML = `<i data-lucide="${name}" class="${className}"></i>`;
+        if (iconRef.current && window.lucide) {
           window.lucide.createIcons({
-            attrs: { width: size, height: size },
-            root: spanRef.current
+            attrs: { class: className, width: size, height: size },
+            nameAttr: 'data-lucide',
+            icons: { [name]: window.lucide.icons[name] },
+            root: iconRef.current.parentElement
           });
         }
       }, [name, size, className]);
-      return <span ref={spanRef} className="inline-flex items-center justify-center"></span>;
+      return <i data-lucide={name} ref={iconRef} className={className}></i>;
     };
 
+    // คอมโพเนนต์ ท้องฟ้าที่มีแค่ดาววิ้งค์ๆ
     const SkyBackground = () => {
+      // SVG สำหรับดาว 4 แฉก
       const SparkleIcon = ({ color, size }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2L14.64 9.36L22 12L14.64 14.64L12 22L9.36 14.64L2 12L9.36 9.36L12 2Z" />
         </svg>
       );
+
+      // สร้างดาววิ้งค์ๆ 25 ดวง สุ่มตำแหน่ง
       const stars = Array.from({ length: 25 }).map((_, i) => {
         const left = Math.random() * 100;
         const top = Math.random() * 100;
-        const size = 12 + Math.random() * 18;
-        const animDuration = 3 + Math.random() * 4;
+        const size = 12 + Math.random() * 18; // ขนาด 12px - 30px
+        const animDuration = 3 + Math.random() * 4; // กระพริบทุกๆ 3s - 7s
         const animDelay = Math.random() * 5;
-        const colors = ['#ffdf73', '#ffd1dc', '#ffffff'];
+        const colors = ['#ffdf73', '#ffd1dc', '#ffffff']; // ดาวสีเหลือง, ชมพู, ขาว
+
         return (
-          <div key={`star-${i}`} className="star" style={{ left: `${left}vw`, top: `${top}vh`, animationDuration: `${animDuration}s`, animationDelay: `${animDelay}s` }}>
+          <div
+            key={`star-${i}`}
+            className="star"
+            style={{
+              left: `${left}vw`,
+              top: `${top}vh`,
+              animationDuration: `${animDuration}s`,
+              animationDelay: `${animDelay}s`,
+            }}
+          >
             <SparkleIcon color={colors[i % colors.length]} size={size} />
           </div>
         );
       });
-      return <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">{stars}</div>;
-    };
-
-    const MenuButton = ({ title, desc, icon, href, delay, colorClass, iconBgClass }) => (
-      <a 
-        href={href} 
-        className="menu-btn flex items-center p-4 gap-4 w-full group animate-in opacity-0"
-        style={{ animationDelay: `${delay}ms` }}
-      >
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300 ${iconBgClass}`}>
-          <Icon name={icon} size={24} className={colorClass} />
-        </div>
-        <div className="flex-1 text-left">
-          <h2 className="text-[15px] font-bold text-kosame-browndark leading-tight mb-0.5 group-hover:text-kosame-blue transition-colors">{title}</h2>
-          <p className="text-[11px] font-semibold text-kosame-brown/70 leading-tight">{desc}</p>
-        </div>
-        <div className="w-8 h-8 rounded-full bg-kosame-bg flex items-center justify-center text-kosame-blue/50 group-hover:bg-kosame-yellow group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
-            <Icon name="chevron-right" size={18} />
-        </div>
-      </a>
-    );
-
-    const App = () => {
-      
-      const menuItems = [
-        {
-          title: "CHECK QUEUE",
-          desc: "เช็คคิวงาน สถานะ และกำหนดส่ง",
-          icon: "calendar-days",
-          href: "https://ksm-bb.github.io/kosame-q/",
-          colorClass: "text-white",
-          iconBgClass: "bg-kosame-blue group-hover:bg-kosame-bluedark",
-          delay: 100
-        },
-        {
-          title: "PRICE LIST",
-          desc: "รายละเอียดราคาและข้อตกลง",
-          icon: "tag",
-          href: "https://ksm-bb.github.io/price-list/",
-          colorClass: "text-kosame-brown",
-          iconBgClass: "bg-kosame-yellow group-hover:bg-[#ebd453]",
-          delay: 200
-        },
-        {
-          title: "EXAMPLE WORK",
-          desc: "แกลลอรี่รวมผลงานที่ผ่านมา",
-          icon: "image",
-          href: "https://ksm-bb.github.io/kosame-example/",
-          colorClass: "text-white",
-          iconBgClass: "bg-kosame-brown group-hover:bg-kosame-browndark",
-          delay: 300
-        },
-        {
-          title: "YCH BASE",
-          desc: "ดูตัวอย่าง YCH Base ทั้งหมด",
-          icon: "layers",
-          href: "https://ksm-bb.github.io/ych-base/",
-          colorClass: "text-kosame-blue",
-          iconBgClass: "bg-kosame-blue/20 group-hover:bg-kosame-blue/30",
-          delay: 400
-        },
-        {
-          title: "WEB APP",
-          desc: "ระบบส่งบรีฟงาน (สำหรับลูกค้า)",
-          icon: "layout-template",
-          href: "https://ksm-bb.github.io/-brief-webapp/",
-          colorClass: "text-kosame-brown",
-          iconBgClass: "bg-kosame-cream group-hover:bg-[#f0e4ca]",
-          delay: 500
-        }
-      ];
 
       return (
-        <div className="w-full max-w-sm mx-auto relative px-5 pb-12 pt-8 z-10 flex flex-col items-center">
-          <SkyBackground />
-          
-          {/* Header Profile Section */}
-          <div className="flex flex-col items-center mb-8 animate-pop">
-            <div className="relative mb-4">
-              {/* ตกแต่งกรอบโปรไฟล์ */}
-              <div className="absolute inset-0 bg-kosame-yellow rounded-full blur-md opacity-40 animate-pulse"></div>
-              <div className="w-32 h-32 bg-white rounded-full border-[5px] border-kosame-blue overflow-hidden shadow-[0_8px_0_0_#cceaff] relative z-10">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+          {stars}
+        </div>
+      );
+    };
+
+    const ReturnButton = ({ setView }) => (
+      <div className="flex justify-center mt-8">
+        <button onClick={() => setView('home')} className="group flex items-center gap-2 px-6 py-3 bg-kosame-yellow text-white font-bold rounded-full border-4 border-white shadow-[0_4px_0_0_#e6c35c] hover:translate-y-1 hover:shadow-[0_0px_0_0_#e6c35c] transition-all relative z-20">
+          <Icon name="arrow-left" size={20} />
+          <span>กลับหน้าหลัก</span>
+        </button>
+      </div>
+    );
+
+    const HomeView = ({ setView }) => (
+      <div className="flex flex-col gap-6 animate-pop p-4 pt-8 w-full max-w-md relative z-10">
+         <header className="relative flex flex-col items-center justify-center text-center p-4">
+            
+            <div className="w-28 h-28 bg-white rounded-full shadow-md mb-4 border-4 border-kosame-blue overflow-hidden relative group z-10">
                 <img 
-                  src="https://i.ibb.co/nK37qTf/4126-20250325120539.png" 
-                  className="w-full h-full object-cover" 
-                  alt="Kosame Profile" 
+                    src="https://i.ibb.co/nK37qTf/4126-20250325120539.png" 
+                    alt="Kosame Profile" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-              </div>
-              {/* ดาวประดับ */}
-              <div className="absolute -top-2 -right-2 text-kosame-yellow z-20 animate-bounce"><Icon name="sparkles" size={24}/></div>
-              <div className="absolute bottom-2 -left-3 text-kosame-blue z-20"><Icon name="star" size={18}/></div>
+            </div>
+            
+            <h1 className="text-4xl font-bold text-kosame-browndark tracking-wide mb-1 z-10 drop-shadow-sm">Kosame</h1>
+            <p className="text-sm font-medium text-kosame-brown bg-kosame-cream px-4 py-1 rounded-full border border-white shadow-sm mt-1 z-10">
+                Welcome to my art corner ✧.*
+            </p>
+        </header>
+
+        <nav className="flex flex-col gap-4 mt-2 z-10">
+          {[
+            { 
+              id: 'queue', 
+              label: 'CHECK QUEUE', 
+              desc: 'ตรวจสอบคิวงานได้ที่นี่',
+              icon: 'clipboard-list', 
+              url: 'https://ksm-bb.github.io/kosame-q/',
+              newTab: false
+            },
+            { 
+              id: 'tos', 
+              label: 'TOS', 
+              desc: 'ข้อตกลงและเงื่อนไขในการสั่งงาน',
+              icon: 'book-heart', 
+              action: () => setView('tos')
+            },
+            { 
+              id: 'webapp', 
+              label: 'WEB APP', 
+              desc: 'รายละเอียด และราคา',
+              icon: 'monitor', 
+              url: 'https://ksm-bb.github.io/-brief-webapp/',
+              newTab: false
+            },
+            { 
+              id: 'price', 
+              label: 'PRICE LIST', 
+              desc: 'เช็คราคางานวาดที่นี่',
+              icon: 'tag', 
+              url: 'https://ksm-bb.github.io/price-list/', 
+              newTab: false
+            },
+            { 
+              id: 'example', 
+              label: 'EXAMPLE WORK', 
+              desc: 'ตัวอย่างผลงาน',
+              icon: 'image', 
+              url: 'https://ksm-bb.github.io/kosame-example/',
+              newTab: false
+            },
+            { 
+              id: 'ych', 
+              label: 'YCH BASE', 
+              desc: 'เลือกท่าทางที่เรารับวาด',
+              icon: 'sparkles', 
+              url: 'https://ksm-bb.github.io/ych-base/',
+              newTab: false
+            },
+          ].map((item, idx) => (
+            <button 
+                key={item.id}
+                onClick={() => {
+                    if (item.action) {
+                        item.action();
+                    } else {
+                        window.open(item.url, item.newTab ? '_blank' : '_self');
+                    }
+                }} 
+                className="group relative w-full p-4 flex items-center gap-4 bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-kosame-blue shadow-[0_4px_0_0_#cceaff] hover:translate-y-1 hover:shadow-[0_0px_0_0_#cceaff] transition-all text-left"
+            >
+                <div className="relative p-3 bg-kosame-cream rounded-xl text-kosame-browndark group-hover:bg-kosame-yellow group-hover:text-white transition-colors">
+                    <Icon name={item.icon} size={24} />
+                </div>
+                
+                <div className="flex-grow">
+                    <h3 className="text-lg font-bold text-kosame-browndark">{item.label}</h3>
+                    <p className="text-sm text-kosame-brown leading-tight">{item.desc}</p>
+                </div>
+
+                <div className="text-kosame-blue group-hover:text-kosame-yellow transition-colors bg-kosame-bg p-2 rounded-full">
+                     <Icon name={item.newTab ? "external-link" : "chevron-right"} size={18} />
+                </div>
+            </button>
+          ))}
+        </nav>
+      </div>
+    );
+
+    const TOSView = ({ setView }) => {
+        const tosData = [
+            {
+                icon: "clock", title: "Timeline Working",
+                desc: "ระยะการทำงานสามารถดูได้ที่หน้า check queue เวลาที่กำหนดเป็นเวลาโดยประมาณ บางงานอาจได้รับเร็วกว่ากำหนด",
+                box: "หากมีเหตุจำเป็นที่ทำให้งานล่าช้าจะแจ้งให้ทราบก่อนทุกครั้งนะคะ 🙇‍♀️"
+            },
+            {
+                icon: "activity", title: "Progress Policy",
+                desc: "งดเร่งงานก่อนถึงระยะเวลาที่กำหนด แต่สามารถสอบถามอัพเดทงานได้น้า โดยปกติหากเป็นงานที่ใช้ระยะเวลานาน ทางเราจะส่งอัพเดททุกๆ 3 วันค่ะ"
+            },
+            {
+                icon: "coffee", title: "Operation Hours",
+                desc: "เวลาทำงาน ของทางเราคือ 19.00 น.-23.00 น. นอกเหนือจากเวลานี้จะสามารถตอบแชท หรืออัพเดทตามปกติค่ะ",
+                note: "(แต่ยังไม่สามารถวาดงาน หรือแก้งานได้ในทันทีนะคะ)"
+            },
+            {
+                icon: "edit-3", title: "Modification Rules",
+                desc: "ก่อนถึงคิว สามารถแจ้งขอเปลี่ยนบรีฟตัวละครได้ แต่ไม่อนุญาตให้เพิ่มจำนวน หรือเพิ่มสเกลน้า",
+                box: "เนื่องจากทางเรากำหนดขอบเขตเวลาไว้ตั้งแต่ลงคิว หากเปลี่ยนแปลงตรงนี้อาจจะกระทบกับคิวอื่นค่ะ 🥺"
+            },
+            {
+                icon: "image", title: "File Specifications",
+                isSpec: true,
+                box: "หากต้องการขนาดอื่น แจ้งก่อนเริ่มงานได้เลยค่ะ ✨"
+            },
+            {
+                icon: "heart", title: "Portfolios",
+                desc: "ทางร้านจะนำผลงานของท่านไปเป็นตัวอย่างคอมมิชชั่นนะคะ",
+                note: "(หากไม่สะดวก หรือไม่ต้องการให้เผยแพร่ รบกวนแจ้งก่อนเริ่มงานทุกครั้งน้า)"
+            }
+        ];
+
+        return (
+          <div className="flex flex-col gap-6 animate-pop pb-6 p-4 pt-8 w-full max-w-md relative z-10">
+             <div className="flex items-center gap-4 bg-white/90 backdrop-blur-sm p-4 rounded-2xl border-2 border-kosame-cream shadow-sm">
+                <div className="bg-kosame-yellow p-3 rounded-full text-white">
+                  <Icon name="book-heart" size={28} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-kosame-browndark">Terms of Service</h2>
+                  <p className="text-sm text-kosame-brown">ข้อตกลงและเงื่อนไข</p>
+                </div>
             </div>
 
-            <h1 className="text-3xl font-extrabold text-kosame-browndark tracking-wide mt-2">Kosame</h1>
-            <p className="text-sm font-bold text-kosame-brown mt-1 flex items-center gap-1.5 bg-white/60 px-4 py-1.5 rounded-full border border-kosame-cream backdrop-blur-sm">
-               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-               Welcome to my art corner 🎨
-            </p>
+            <div className="max-h-[60vh] overflow-y-auto cute-scrollbar pr-2 flex flex-col gap-4">
+                {tosData.map((item, idx) => (
+                    <div key={idx} className="bg-white/90 backdrop-blur-sm p-5 rounded-2xl border-2 border-kosame-blue/30 shadow-sm relative">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="bg-kosame-cream p-2 rounded-full text-kosame-browndark">
+                                <Icon name={item.icon} size={18} />
+                            </div>
+                            <h3 className="text-lg font-bold text-kosame-browndark">{item.title}</h3>
+                        </div>
+                        
+                        {item.isSpec ? (
+                            <div className="text-sm text-kosame-brown leading-relaxed flex flex-col gap-2 mb-2 bg-kosame-bg/80 p-3 rounded-xl">
+                                <div className="flex items-center justify-between"><span className="font-bold">Emote:</span> <span className="bg-white px-2 py-0.5 rounded border border-kosame-cream">1000x1000 px</span></div>
+                                <div className="flex items-center justify-between"><span className="font-bold">Others:</span> <span className="bg-white px-2 py-0.5 rounded border border-kosame-cream">2048x2048 px</span></div>
+                            </div>
+                        ) : (
+                            <p className="text-sm text-kosame-brown leading-relaxed mb-2">{item.desc}</p>
+                        )}
+                        
+                        {item.note && <p className="text-xs text-kosame-brown/70 mt-1">{item.note}</p>}
+                        
+                        {item.box && (
+                            <div className="mt-4 p-3 bg-kosame-yellow/10 border-2 border-kosame-yellow/30 rounded-xl text-sm text-kosame-browndark flex gap-2 items-start">
+                                <Icon name="info" size={16} className="mt-0.5 shrink-0 text-kosame-yellow" />
+                                <span>{item.box}</span>
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
+            <ReturnButton setView={setView} />
           </div>
+        );
+    };
 
-          {/* Social / Contact Mini Links (Optional: สามารถใส่ลิงก์ได้) */}
-          <div className="flex gap-3 mb-8 animate-in opacity-0" style={{ animationDelay: '50ms' }}>
-             <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-kosame-blue border-2 border-kosame-cream hover:bg-kosame-blue hover:text-white hover:border-kosame-blue transition-colors shadow-sm">
-                <Icon name="twitter" size={18}/>
-             </a>
-             <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-kosame-blue border-2 border-kosame-cream hover:bg-kosame-blue hover:text-white hover:border-kosame-blue transition-colors shadow-sm">
-                <Icon name="instagram" size={18}/>
-             </a>
-             <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-kosame-blue border-2 border-kosame-cream hover:bg-kosame-blue hover:text-white hover:border-kosame-blue transition-colors shadow-sm">
-                <Icon name="mail" size={18}/>
-             </a>
-          </div>
+    const App = () => {
+      const [view, setView] = useState('home');
 
-          {/* Menu Buttons List */}
-          <div className="w-full flex flex-col gap-4">
-             {menuItems.map((item, index) => (
-                <MenuButton key={index} {...item} />
-             ))}
-          </div>
-
-          {/* Footer Text */}
-          <div className="mt-12 text-center animate-in opacity-0" style={{ animationDelay: '600ms' }}>
-             <p className="text-[10px] font-bold text-kosame-brown/60 uppercase tracking-widest">© 2026 Kosame Art. All rights reserved.</p>
-          </div>
+      return (
+        <div className="w-full flex justify-center items-center relative min-h-screen">
           
+          <SkyBackground />
+          
+          <div className="relative z-10 w-full flex flex-col items-center">
+            {view === 'home' && <HomeView setView={setView} />}
+            {view === 'tos' && <TOSView setView={setView} />}
+            
+            <footer className="mt-4 pb-4 flex flex-col items-center text-kosame-brown text-xs font-medium z-10">
+                <p>Thank you for your support ♡</p>
+            </footer>
+          </div>
         </div>
       );
     };
